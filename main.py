@@ -48,6 +48,23 @@ def is_letter_in_word(secret_word, letter):
     """
     return letter in secret_word
 
+def update_attempts(secret_word, letter, remaining_attempts):
+    """
+    Обновляет количество оставшихся попыток.
+    Если введённой буквы нет в загаданном слове,
+    количество попыток уменьшается на единицу.
+    Args:
+        secret_word (str): загаданное слово.
+        letter (str): введённая буква.
+        remaining_attempts (int): текущее количество попыток.
+    Returns:
+        int: обновлённое количество оставшихся попыток.
+    """
+    if not is_letter_in_word(secret_word, letter):
+        remaining_attempts -= 1
+
+    return remaining_attempts
+
 if __name__ == "__main__":
     secret_word = choose_word()
     guessed_letters = set()
