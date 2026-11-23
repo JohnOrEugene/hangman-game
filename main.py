@@ -1,11 +1,14 @@
-
 """
 Основной модуль игры «Виселица».
-Содержит функции выбора слова, его отображения
-и проверки введённых букв.
+Содержит функции выбора слова, его отображения,
+проверки введённых букв и обработки пользовательского ввода.
 """
+
 import random
 from words import WORDS
+
+## Алфавит, допустимый для ввода в игре.
+RUSSIAN_ALPHABET = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
 def choose_word():
     """
@@ -64,6 +67,35 @@ def update_attempts(secret_word, letter, remaining_attempts):
         remaining_attempts -= 1
 
     return remaining_attempts
+
+def validate_letter(user_input, guessed_letters):
+    """
+    Проверяет корректность введённой пользователем буквы.
+    Проверяет, что введена ровно одна буква русского алфавита
+    и что эта буква ещё не использовалась.
+    Args:
+        user_input (str): строка, введённая пользователем.
+        guessed_letters (set): множество ранее введённых букв.
+    Returns:
+        tuple: пара значений (буква, сообщение об ошибке).
+            При корректном вводе возвращается (буква, None).
+            При некорректном вводе возвращается (None, сообщение).
+    """
+    letter = user_input.strip().lower()
+
+    if not letter:
+        return None, "Вы ничего не ввели. Введите одну букву."
+
+    if len(letter) != 1:
+        return None, "Введите ровно одну букву."
+
+    if letter not in RUSSIAN_ALPHABET:
+        return None, "Можно вводить только буквы русского алфавита."
+
+    if letter in guessed_letters:
+        return None, f"Букву «{letter}» вы уже вводили."
+
+    return letter, None
 
 if __name__ == "__main__":
     secret_word = choose_word()
