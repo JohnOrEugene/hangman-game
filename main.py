@@ -1,7 +1,7 @@
 """
 Основной модуль игры «Виселица».
 Содержит функции выбора слова, его отображения,
-проверки введённых букв и обработки пользовательского ввода.
+проверки введённых букв и управления игровым процессом.
 """
 
 import random
@@ -9,6 +9,8 @@ from words import WORDS
 
 ## Алфавит, допустимый для ввода в игре.
 RUSSIAN_ALPHABET = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+## Начальное количество попыток игрока.
+MAX_ATTEMPTS = 6
 
 def choose_word():
     """
@@ -26,7 +28,7 @@ def display_word(secret_word, guessed_letters):
     символом подчёркивания.
     Args:
         secret_word (str): загаданное слово.
-        guessed_letters (set): множество угаданных букв.
+        guessed_letters (set): множество введённых букв.
     Returns:
         str: строка со скрытыми и открытыми буквами.
     """
@@ -118,7 +120,45 @@ def is_game_lost(remaining_attempts):
     """
     return remaining_attempts <= 0
 
-if __name__ == "__main__":
+
+def play_game():
+    """
+    Запускает одну партию игры «Виселица».
+    Управляет игровым процессом: принимает буквы,
+    обновляет количество попыток и проверяет завершение игры.
+    """
     secret_word = choose_word()
     guessed_letters = set()
+    remaining_attempts = MAX_ATTEMPTS
+    print("Добро пожаловать в игру «Виселица»!")
     print("Загаданное слово:", display_word(secret_word, guessed_letters))
+    print(f"Количество попыток: {remaining_attempts}")
+
+    while not is_game_won(secret_word, guessed_letters) and not is_game_lost(remaining_attempts):
+        user_input = input("\nВведите букву: ")
+
+        letter, error_message = validate_letter(user_input, guessed_letters)
+
+        if error_message is not None:
+            print(error_message)
+            continue
+
+        guessed_letters.add(letter)
+        remaining_attempts = update_attempts(secret_word, letter, remaining_attempts)
+
+        if is_letter_in_word(secret_word, letter):
+            print(f"Есть такая буква: «{letter}»!")
+        else:
+            print(f"Буквы «{letter}» нет в загаданном слове.")
+
+        print("Загаданное слово:", display_word(secret_word, guessed_letters))
+        print(f"Осталось попыток: {remaining_attempts}")
+
+    if is_game_won(secret_word, guessed_letters):
+        print(f"\nПоздравляем! Вы угадали слово: {secret_word}")
+    else:
+        print(f"\nПопытки закончились. Вы проиграли!")
+        print(f"Загаданное слово было: {secret_word}")
+
+if __name__ == "__main__":
+    play_game()
