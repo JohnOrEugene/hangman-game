@@ -97,6 +97,27 @@ def validate_letter(user_input, guessed_letters):
 
     return letter, None
 
+def is_game_won(secret_word, guessed_letters):
+    """
+    Проверяет, угадал ли игрок все буквы загаданного слова.
+    Args:
+        secret_word (str): загаданное слово.
+        guessed_letters (set): множество введённых игроком букв.
+    Returns:
+        bool: True, если все буквы слова угаданы, иначе False.
+    """
+    return all(letter in guessed_letters for letter in secret_word)
+
+def is_game_lost(remaining_attempts):
+    """
+    Проверяет, закончились ли у игрока попытки.
+    Args:
+        remaining_attempts (int): количество оставшихся попыток.
+    Returns:
+        bool: True, если попыток не осталось, иначе False.
+    """
+    return remaining_attempts <= 0
+
 if __name__ == "__main__":
     secret_word = choose_word()
     guessed_letters = set()
